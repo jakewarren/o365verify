@@ -23,6 +23,30 @@ go get github.com/jakewarren/o365verify/...
 
 ## Usage
 
+### As a library
+```golang
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/jakewarren/o365verify"
+)
+
+func main() {
+	r, err := o365verify.VerifyAddress("test@example.com")
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	spew.Dump(r)
+}
+```
+
+### As a CLI
+
 ```
 ❯ o365verify --help
 Usage: o365verify [flags] <email address...>
@@ -33,7 +57,7 @@ Flags:
   -V, --version       display version information
 ```
 
-### Example
+#### Example
 ```
 ❯ o365verify test@example.com
 [
