@@ -100,7 +100,7 @@ func VerifyAddress(email string) (*Result, error) {
 	_ = resp.Body.Close()
 
 	var realm map[string]string
-	json.Unmarshal([]byte(rawBody), &realm)
+	_ = json.Unmarshal(rawBody, &realm)
 
 	r.NameSpaceType = realm["NameSpaceType"]
 	r.FederationBrandName = realm["FederationBrandName"]
