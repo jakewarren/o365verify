@@ -74,6 +74,7 @@ Flags:
 ## Acknowledgments 
 
 [Raikia/UhOh365](https://github.com/Raikia/UhOh365) - for the discovery and initial work
+[nixintel/o365chk] (https://github.com/nixintel/o365chk) - for an implementation of the technique utilizing the UserRealm endpoint
 
 ## Changes
 

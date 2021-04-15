@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.0] - 2019-12-09
+- Add enumeration using the UserRealm endpoint
+
 ## [0.1.0] - 2019-12-09
 - Initial Release
 
-[unreleased]: https://github.com/jakewarren/o365verify/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/jakewarren/o365verify/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/jakewarren/o365verify/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jakewarren/o365verify/releases/tag/v0.1.0

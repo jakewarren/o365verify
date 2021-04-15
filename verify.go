@@ -2,6 +2,7 @@
 package o365verify
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -16,11 +17,15 @@ func init() {
 
 // Result contains all available information about the email address
 type Result struct {
-	EmailAddress       string // the email address searched
-	CalculatedBETarget string // the mailbox server to which the request is routed. Reference: https://docs.microsoft.com/en-us/exchange/management/health/troubleshooting-autodiscover-health-set
-	MailboxGUID        string // the GUID of the mailbox
-	ValidAddress       bool   // is the email address valid
-	DomainIsO365       bool   // is the domain an office365 domain
+	EmailAddress        string // the email address searched
+	CalculatedBETarget  string // the mailbox server to which the request is routed. Reference: https://docs.microsoft.com/en-us/exchange/management/health/troubleshooting-autodiscover-health-set
+	MailboxGUID         string // the GUID of the mailbox
+	ValidAddress        bool   // is the email address valid
+	DomainIsO365        bool   // is the domain an office365 domain
+	NameSpaceType       string // whether the instance is Federated, Managed, or Unknown
+	FederationBrandName string // the internal brand name
+	AuthURL             string // authentication URL
+	CloudInstanceName   string
 }
 
 // VerifyAddress looks up the specified email address in O365 and returns all available information
@@ -80,6 +85,27 @@ func VerifyAddress(email string) (*Result, error) {
 
 	r.MailboxGUID = resp.Header.Get("X-MailboxGuid")
 	r.CalculatedBETarget = resp.Header.Get("X-CalculatedBETarget")
+
+	url = fmt.Sprintf("https://login.microsoftonline.com/getuserrealm.srf?login=%s&json=1", email)
+	req, _ = http.NewRequest("GET", url, nil)
+	req.Header.Set("User-Agent", "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.12026; Pro)")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err = client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	rawBody, _ = ioutil.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+
+	var realm map[string]string
+	json.Unmarshal([]byte(rawBody), &realm)
+
+	r.NameSpaceType = realm["NameSpaceType"]
+	r.FederationBrandName = realm["FederationBrandName"]
+	r.AuthURL = realm["AuthURL"]
+	r.CloudInstanceName = realm["CloudInstanceName"]
 
 	return &r, nil
 }
